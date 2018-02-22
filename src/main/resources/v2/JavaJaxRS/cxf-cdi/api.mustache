@@ -1,0 +1,60 @@
+package {{package}};
+
+{{#imports}}import {{import}};
+{{/imports}}
+import {{package}}.{{classname}}Service;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
+import io.swagger.annotations.*;
+import java.io.InputStream;
+
+import org.apache.cxf.jaxrs.ext.multipart.Attachment;
+import org.apache.cxf.jaxrs.ext.multipart.Multipart;
+
+import java.util.Map;
+import java.util.List;
+{{#useBeanValidation}}
+import javax.validation.constraints.*;
+{{/useBeanValidation}}
+@Path("/{{{baseName}}}")
+@RequestScoped
+
+@Api(description = "the {{{baseName}}} API")
+{{#hasConsumes}}@Consumes({ {{#consumes}}"{{{mediaType}}}"{{#has this 'more'}}, {{/has}}{{/consumes}} }){{/hasConsumes}}
+{{#hasProduces}}@Produces({ {{#produces}}"{{{mediaType}}}"{{#has this 'more'}}, {{/has}}{{/produces}} }){{/hasProduces}}
+{{>generatedAnnotation}}
+
+public class {{classname}}  {
+
+  @Context SecurityContext securityContext;
+
+  @Inject {{classname}}Service delegate;
+
+{{#operations}}
+{{#operation}}
+
+    @{{httpMethod}}
+    {{#subresourceOperation}}@Path("{{{path}}}"){{/subresourceOperation}}
+    {{#hasConsumes}}@Consumes({ {{#consumes}}"{{{mediaType}}}"{{#has this 'more'}}, {{/has}}{{/consumes}} }){{/hasConsumes}}
+    {{#hasProduces}}@Produces({ {{#produces}}"{{{mediaType}}}"{{#has this 'more'}}, {{/has}}{{/produces}} }){{/hasProduces}}
+    @ApiOperation(value = "{{{summary}}}", notes = "{{{notes}}}", response = {{{returnBaseType}}}.class{{#returnContainer}}, responseContainer = "{{{returnContainer}}}"{{/returnContainer}}{{#hasAuthMethods}}, authorizations = {
+        {{#authMethods}}@Authorization(value = "{{name}}"{{#is this 'oauth'}}, scopes = {
+            {{#scopes}}@AuthorizationScope(scope = "{{scope}}", description = "{{description}}"){{#has this 'more'}},
+            {{/has}}{{/scopes}}
+        }{{/is}}){{#has this 'more'}},
+        {{/has}}{{/authMethods}}
+    }{{/hasAuthMethods}}, tags={ {{#vendorExtensions.x-tags}}"{{tag}}"{{#has this 'more'}}, {{/has}}{{/vendorExtensions.x-tags}} })
+    @ApiResponses(value = { {{#responses}}
+        @ApiResponse(code = {{{code}}}, message = "{{{message}}}", response = {{{baseType}}}.class{{#containerType}}, responseContainer = "{{{containerType}}}"{{/containerType}}){{#has this 'more'}},{{/has}}{{/responses}} })
+    public Response {{nickname}}({{#allParams}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{#has this 'more'}}, {{/has}}{{/allParams}}) {
+        return delegate.{{nickname}}({{#allParams}}{{#is this 'file'}}{{paramName}}InputStream, {{paramName}}Detail{{/is}}{{#isNot this 'file'}}{{paramName}}{{/isNot}}, {{/allParams}}securityContext);
+    }
+{{/operation}}
+}
+{{/operations}}
