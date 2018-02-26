@@ -115,7 +115,7 @@ public class {{classname}}Test {
         {{#allParams}}
         {{#isNot this 'file'}}{{{dataType}}} {{paramName}} = null;{{/isNot}}{{#is this 'file'}}org.apache.cxf.jaxrs.ext.multipart.Attachment {{paramName}} = null;{{/is}}
         {{/allParams}}
-        //{{^vendorExtensions.x-java-is-response-void}}{{>returnTypes}} response = {{/vendorExtensions.x-java-is-response-void}}api.{{operationId}}({{#allParams}}{{paramName}}{{#has this 'more'}}, {{/has}}{{/allParams}});
+        //{{^vendorExtensions.x-java-is-response-void}}{{>returnTypes}} response = {{/vendorExtensions.x-java-is-response-void}}api.{{operationId}}({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
         {{^vendorExtensions.x-java-is-response-void}}//assertNotNull(response);{{/vendorExtensions.x-java-is-response-void}}
         // TODO: test validations
         

@@ -54,16 +54,16 @@ public interface {{classname}}  {
     {{/summary}}
     @{{httpMethod}}
     {{#subresourceOperation}}@Path("{{{path}}}"){{/subresourceOperation}}
-{{#hasConsumes}}
-    @Consumes({ {{#consumes}}"{{{mediaType}}}"{{#has this 'more'}}, {{/has}}{{/consumes}} })
-{{/hasConsumes}}
-{{#hasProduces}}
-    @Produces({ {{#produces}}"{{{mediaType}}}"{{#has this 'more'}}, {{/has}}{{/produces}} })
-{{/hasProduces}}
-    @ApiOperation(value = "{{{summary}}}", tags={ {{#vendorExtensions.x-tags}}"{{tag}}"{{#has this 'more'}}, {{/has}}{{/vendorExtensions.x-tags}} })
+{{#has this 'consumes'}}
+    @Consumes({ {{#consumes}}"{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}{{/consumes}} })
+{{/has}}
+{{#has this 'produces'}}
+    @Produces({ {{#produces}}"{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}{{/produces}} })
+{{/has}}
+    @ApiOperation(value = "{{{summary}}}", tags={ {{#vendorExtensions.x-tags}}"{{tag}}"{{#hasMore}}, {{/hasMore}}{{/vendorExtensions.x-tags}} })
     @ApiResponses(value = { {{#responses}}
         @ApiResponse(code = {{{code}}}, message = "{{{message}}}"{{^vendorExtensions.x-java-is-response-void}}, response = {{{baseType}}}.class{{#containerType}}, responseContainer = "{{{containerType}}}"{{/containerType}}{{/vendorExtensions.x-java-is-response-void}}){{#has this 'more'}},{{/has}}{{/responses}} })
-    public {{>returnTypes}} {{nickname}}({{#allParams}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{#has this 'more'}}, {{/has}}{{/allParams}});
+    public {{>returnTypes}} {{nickname}}({{#allParams}}{{>queryParams}}{{>pathParams}}{{>headerParams}}{{>bodyParams}}{{>formParams}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
 {{/operation}}
 }
 {{/operations}}
