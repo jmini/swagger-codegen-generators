@@ -62,14 +62,6 @@ public class JavaCXFServerCodegen extends AbstractJavaJAXRSServerCodegen impleme
 
         outputFolder = "generated-code/JavaJaxRS-CXF";
 
-        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
-
-        // clear model and api doc template as this codegen
-        // does not support auto-generated markdown doc at the moment
-        // TODO: add doc templates
-        modelDocTemplateFiles.remove("model_doc.mustache");
-        apiDocTemplateFiles.remove("api_doc.mustache");
-
         typeMapping.put("date", "LocalDate");
 
         importMapping.put("LocalDate", "org.joda.time.LocalDate");
@@ -112,6 +104,14 @@ public class JavaCXFServerCodegen extends AbstractJavaJAXRSServerCodegen impleme
         else {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME + "/cxf", DEFAULT_TEMPLATE_VERSION);
         }
+
+        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
+
+        // clear model and api doc template as this codegen
+        // does not support auto-generated markdown doc at the moment
+        // TODO: add doc templates
+        modelDocTemplateFiles.remove("model_doc.mustache");
+        apiDocTemplateFiles.remove("api_doc.mustache");
 
         if (additionalProperties.containsKey(ADD_CONSUMES_PRODUCES_JSON)) {
             this.setAddConsumesProducesJson(convertPropertyToBooleanAndWriteBack(ADD_CONSUMES_PRODUCES_JSON));

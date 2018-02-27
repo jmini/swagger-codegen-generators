@@ -27,10 +27,6 @@ public class JavaJAXRSCXFCDIServerCodegen extends JavaJAXRSSpecServerCodegen imp
         artifactId = "swagger-jaxrs-cxf-cdi-server";
         sourceFolder = "src" + File.separator + "gen" + File.separator + "java";
 
-        // Three API templates to support CDI injection
-        apiTemplateFiles.put("apiService.mustache", ".java");
-        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
-
         // Use standard types
         typeMapping.put("DateTime", "java.util.Date");
 
@@ -52,6 +48,10 @@ public class JavaJAXRSCXFCDIServerCodegen extends JavaJAXRSSpecServerCodegen imp
         else {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME + "/cxf-cdi", DEFAULT_TEMPLATE_VERSION);
         }
+
+        // Three API templates to support CDI injection
+        apiTemplateFiles.put("apiService.mustache", ".java");
+        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
 
         if (additionalProperties.containsKey(USE_BEANVALIDATION)) {
             this.setUseBeanValidation(convertPropertyToBoolean(USE_BEANVALIDATION));

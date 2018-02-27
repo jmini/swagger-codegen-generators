@@ -28,15 +28,6 @@ public class JavaResteasyServerCodegen extends AbstractJavaJAXRSServerCodegen im
         artifactId = "swagger-jaxrs-resteasy-server";
 
         outputFolder = "generated-code/JavaJaxRS-Resteasy";
-        apiTemplateFiles.put("apiService.mustache", ".java");
-        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
-        apiTestTemplateFiles.clear(); // TODO: add test template
-
-        // clear model and api doc template as AbstractJavaJAXRSServerCodegen
-        // does not support auto-generated markdown doc at the moment
-        // TODO: add doc templates
-        modelDocTemplateFiles.remove("model_doc.mustache");
-        apiDocTemplateFiles.remove("api_doc.mustache");
 
         dateLibrary = "legacy";// TODO: change to joda
 
@@ -63,6 +54,16 @@ public class JavaResteasyServerCodegen extends AbstractJavaJAXRSServerCodegen im
         else {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME + "/resteasy", DEFAULT_TEMPLATE_VERSION);
         }
+
+        apiTemplateFiles.put("apiService.mustache", ".java");
+        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
+        apiTestTemplateFiles.clear(); // TODO: add test template
+
+        // clear model and api doc template as AbstractJavaJAXRSServerCodegen
+        // does not support auto-generated markdown doc at the moment
+        // TODO: add doc templates
+        modelDocTemplateFiles.remove("model_doc.mustache");
+        apiDocTemplateFiles.remove("api_doc.mustache");
 
         if (additionalProperties.containsKey(GENERATE_JBOSS_DEPLOYMENT_DESCRIPTOR)) {
             boolean generateJbossDeploymentDescriptorProp = convertPropertyToBooleanAndWriteBack(GENERATE_JBOSS_DEPLOYMENT_DESCRIPTOR);

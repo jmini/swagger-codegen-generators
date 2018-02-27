@@ -35,17 +35,6 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
         outputFolder = "generated-code/JavaJaxRS-Jersey";
 
-        apiTemplateFiles.put("apiService.mustache", ".java");
-        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
-        apiTemplateFiles.put("apiServiceFactory.mustache", ".java");
-        apiTestTemplateFiles.clear(); // TODO: add test template
-
-        // clear model and api doc template as this codegen
-        // does not support auto-generated markdown doc at the moment
-        // TODO: add doc templates
-        modelDocTemplateFiles.remove("model_doc.mustache");
-        apiDocTemplateFiles.remove("api_doc.mustache");
-
         CliOption library = new CliOption(CodegenConstants.LIBRARY, "library template (sub-template) to use");
 
         supportedLibraries.put(LIBRARY_JERSEY1, "Jersey core 1.x");
@@ -96,6 +85,17 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
         else {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME, DEFAULT_TEMPLATE_VERSION);
         }
+
+        apiTemplateFiles.put("apiService.mustache", ".java");
+        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
+        apiTemplateFiles.put("apiServiceFactory.mustache", ".java");
+        apiTestTemplateFiles.clear(); // TODO: add test template
+
+        // clear model and api doc template as this codegen
+        // does not support auto-generated markdown doc at the moment
+        // TODO: add doc templates
+        modelDocTemplateFiles.remove("model_doc.mustache");
+        apiDocTemplateFiles.remove("api_doc.mustache");
 
         // use default library if unset
         if (StringUtils.isEmpty(library)) {

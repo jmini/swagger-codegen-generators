@@ -32,20 +32,6 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
         artifactId = "swagger-jaxrs-server";
         outputFolder = "generated-code/JavaJaxRS-Spec";
 
-        modelTemplateFiles.put("model.mustache", ".java");
-        apiTemplateFiles.put("api.mustache", ".java");
-        apiPackage = "io.swagger.api";
-        modelPackage = "io.swagger.model";
-
-        apiTestTemplateFiles.clear(); // TODO: add api test template
-        modelTestTemplateFiles.clear(); // TODO: add model test template
-
-        // clear model and api doc template as this codegen
-        // does not support auto-generated markdown doc at the moment
-        // TODO: add doc templates
-        modelDocTemplateFiles.remove("model_doc.mustache");
-        apiDocTemplateFiles.remove("api_doc.mustache");
-
         additionalProperties.put("title", title);
 
         typeMapping.put("date", "LocalDate");
@@ -94,6 +80,20 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
         else {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME + "/spec", DEFAULT_TEMPLATE_VERSION);
         }
+
+        modelTemplateFiles.put("model.mustache", ".java");
+        apiTemplateFiles.put("api.mustache", ".java");
+        apiPackage = "io.swagger.api";
+        modelPackage = "io.swagger.model";
+
+        apiTestTemplateFiles.clear(); // TODO: add api test template
+        modelTestTemplateFiles.clear(); // TODO: add model test template
+
+        // clear model and api doc template as this codegen
+        // does not support auto-generated markdown doc at the moment
+        // TODO: add doc templates
+        modelDocTemplateFiles.remove("model_doc.mustache");
+        apiDocTemplateFiles.remove("api_doc.mustache");
 
         supportingFiles.clear(); // Don't need extra files provided by
                                  // AbstractJAX-RS & Java Codegen
