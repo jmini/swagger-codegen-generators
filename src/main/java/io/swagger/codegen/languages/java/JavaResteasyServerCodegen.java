@@ -41,7 +41,8 @@ public class JavaResteasyServerCodegen extends AbstractJavaJAXRSServerCodegen im
 
     @Override
     public String getHelp() {
-        return "Generates a Java JAXRS-Resteasy Server application.";
+        return "[WORK IN PROGRESS: generated code depends from Swagger v2 libraries] "
+                + "Generates a Java JAXRS-Resteasy Server application.";
     }
 
     @Override

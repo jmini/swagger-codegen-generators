@@ -54,7 +54,8 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     @Override
     public String getHelp() {
-        return "Generates a Java JAXRS Server application based on Jersey framework.";
+        return "[WORK IN PROGRESS: generated code depends from Swagger v2 libraries] "
+                + "Generates a Java JAXRS Server application based on Jersey framework.";
     }
 
     @Override

@@ -166,6 +166,7 @@ public class JavaJAXRSSpecServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     @Override
     public String getHelp() {
-        return "Generates a Java JAXRS Server according to JAXRS 2.0 specification.";
+        return "[WORK IN PROGRESS: generated code depends from Swagger v2 libraries] "
+                + "Generates a Java JAXRS Server according to JAXRS 2.0 specification.";
     }
 }

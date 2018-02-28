@@ -218,7 +218,8 @@ public class JavaCXFServerCodegen extends AbstractJavaJAXRSServerCodegen impleme
 
     @Override
     public String getHelp() {
-        return "Generates a Java JAXRS Server application based on Apache CXF framework.";
+        return "[WORK IN PROGRESS: generated code depends from Swagger v2 libraries] "
+                + "Generates a Java JAXRS Server application based on Apache CXF framework.";
     }
 
     public void setGenerateSpringApplication(boolean generateSpringApplication) {
