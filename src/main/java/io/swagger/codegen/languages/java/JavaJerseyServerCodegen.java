@@ -21,7 +21,7 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
     protected static final String LIBRARY_JERSEY1 = "jersey1";
     protected static final String LIBRARY_JERSEY2 = "jersey2";
-    
+
     /**
      * Default library template to use. (Default:{@value #DEFAULT_LIBRARY})
      */
@@ -34,17 +34,6 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
         super();
 
         outputFolder = "generated-code/JavaJaxRS-Jersey";
-
-        apiTemplateFiles.put("apiService.mustache", ".java");
-        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
-        apiTemplateFiles.put("apiServiceFactory.mustache", ".java");
-        apiTestTemplateFiles.clear(); // TODO: add test template
-
-        // clear model and api doc template as this codegen
-        // does not support auto-generated markdown doc at the moment
-        //TODO: add doc templates
-        modelDocTemplateFiles.remove("model_doc.mustache");
-        apiDocTemplateFiles.remove("api_doc.mustache");
 
         CliOption library = new CliOption(CodegenConstants.LIBRARY, "library template (sub-template) to use");
 
@@ -59,30 +48,29 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return "jaxrs-jersey";
     }
 
     @Override
-    public String getHelp()
-    {
-        return "Generates a Java JAXRS Server application based on Jersey framework.";
+    public String getHelp() {
+        return "[WORK IN PROGRESS: generated code depends from Swagger v2 libraries] "
+                + "Generates a Java JAXRS Server application based on Jersey framework.";
     }
 
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
-        if("null".equals(property.example)) {
+        if ("null".equals(property.example)) {
             property.example = null;
         }
 
-        //Add imports for Jackson
+        // Add imports for Jackson
         boolean isEnum = getBooleanValue(model, IS_ENUM_EXT_NAME);
-        if(!BooleanUtils.toBoolean(isEnum)) {
+        if (!BooleanUtils.toBoolean(isEnum)) {
             model.imports.add("JsonProperty");
             boolean hasEnums = getBooleanValue(model, HAS_ENUMS_EXT_NAME);
-            if(BooleanUtils.toBoolean(hasEnums)) {
+            if (BooleanUtils.toBoolean(hasEnums)) {
                 model.imports.add("JsonValue");
             }
         }
@@ -94,19 +82,31 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
         if (StringUtils.isNotBlank(templateVersion)) {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME, templateVersion);
-        } else {
+        }
+        else {
             embeddedTemplateDir = templateDir = String.format("%s/" + JAXRS_TEMPLATE_DIRECTORY_NAME, DEFAULT_TEMPLATE_VERSION);
         }
-        
+
+        apiTemplateFiles.put("apiService.mustache", ".java");
+        apiTemplateFiles.put("apiServiceImpl.mustache", ".java");
+        apiTemplateFiles.put("apiServiceFactory.mustache", ".java");
+        apiTestTemplateFiles.clear(); // TODO: add test template
+
+        // clear model and api doc template as this codegen
+        // does not support auto-generated markdown doc at the moment
+        // TODO: add doc templates
+        modelDocTemplateFiles.remove("model_doc.mustache");
+        apiDocTemplateFiles.remove("api_doc.mustache");
+
         // use default library if unset
         if (StringUtils.isEmpty(library)) {
             setLibrary(DEFAULT_LIBRARY);
         }
-        
-        if ( additionalProperties.containsKey(CodegenConstants.IMPL_FOLDER)) {
+
+        if (additionalProperties.containsKey(CodegenConstants.IMPL_FOLDER)) {
             implFolder = (String) additionalProperties.get(CodegenConstants.IMPL_FOLDER);
         }
-    
+
         if (additionalProperties.containsKey(USE_TAGS)) {
             this.setUseTags(Boolean.valueOf(additionalProperties.get(USE_TAGS).toString()));
         }
@@ -114,7 +114,8 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
         if ("joda".equals(dateLibrary)) {
             supportingFiles.add(new SupportingFile("JodaDateTimeProvider.mustache", (sourceFolder + '/' + apiPackage).replace(".", "/"), "JodaDateTimeProvider.java"));
             supportingFiles.add(new SupportingFile("JodaLocalDateProvider.mustache", (sourceFolder + '/' + apiPackage).replace(".", "/"), "JodaLocalDateProvider.java"));
-        } else if ( dateLibrary.startsWith("java8") ) {
+        }
+        else if (dateLibrary.startsWith("java8")) {
             supportingFiles.add(new SupportingFile("OffsetDateTimeProvider.mustache", (sourceFolder + '/' + apiPackage).replace(".", "/"), "OffsetDateTimeProvider.java"));
             supportingFiles.add(new SupportingFile("LocalDateProvider.mustache", (sourceFolder + '/' + apiPackage).replace(".", "/"), "LocalDateProvider.java"));
         }
@@ -132,13 +133,12 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
         supportingFiles.add(new SupportingFile("StringUtil.mustache", (sourceFolder + '/' + apiPackage).replace(".", "/"), "StringUtil.java"));
     }
 
-
     @Override
     public Map<String, Object> postProcessModelsEnum(Map<String, Object> objs) {
         objs = super.postProcessModelsEnum(objs);
 
-        //Add imports for Jackson
-        List<Map<String, String>> imports = (List<Map<String, String>>)objs.get("imports");
+        // Add imports for Jackson
+        List<Map<String, String>> imports = (List<Map<String, String>>) objs.get("imports");
         List<Object> models = (List<Object>) objs.get("models");
         for (Object _mo : models) {
             Map<String, Object> mo = (Map<String, Object>) _mo;
@@ -160,7 +160,8 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
     public void addOperationToGroup(String tag, String resourcePath, Operation operation, CodegenOperation co, Map<String, List<CodegenOperation>> operations) {
         if (useTags) {
             super.addOperationToGroup(tag, resourcePath, operation, co, operations);
-        } else  {
+        }
+        else {
             String basePath = resourcePath;
             if (basePath.startsWith("/")) {
                 basePath = basePath.substring(1);
@@ -172,7 +173,8 @@ public class JavaJerseyServerCodegen extends AbstractJavaJAXRSServerCodegen {
 
             if (basePath == "") {
                 basePath = "default";
-            } else {
+            }
+            else {
                 if (co.path.startsWith("/" + basePath)) {
                     co.path = co.path.substring(("/" + basePath).length());
                 }
