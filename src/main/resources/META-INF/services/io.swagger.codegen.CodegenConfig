@@ -1,4 +1,5 @@
 io.swagger.codegen.languages.html.StaticHtmlGenerator
+io.swagger.codegen.languages.html.StaticHtml2Generator
 io.swagger.codegen.languages.java.JavaClientCodegen
 io.swagger.codegen.languages.java.JavaCXFServerCodegen
 io.swagger.codegen.languages.java.JavaInflectorServerCodegen
