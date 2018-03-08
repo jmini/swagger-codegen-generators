@@ -1,6 +1,5 @@
 package io.swagger.codegen.languages.html;
 
-import com.samskivert.mustache.Escapers;
 import com.samskivert.mustache.Mustache.Compiler;
 import io.swagger.codegen.CliOption;
 import io.swagger.codegen.CodegenConfig;
@@ -68,7 +67,7 @@ public class StaticHtmlGenerator extends DefaultCodegenConfig implements Codegen
 
     /**
      * Convert Markdown (CommonMark) to HTML. This class also disables normal HTML
-     * escaping in the Mustache engine (see {@link #processCompiler(Compiler)} above.)
+     * escaping in the Mustache engine (see processCompiler(Compiler) above.)
      */
     @Override
     public String escapeText(String input) {
@@ -79,6 +78,11 @@ public class StaticHtmlGenerator extends DefaultCodegenConfig implements Codegen
     @Override
     public CodegenType getTag() {
         return CodegenType.DOCUMENTATION;
+    }
+
+    @Override
+    public String getArgumentsLocation() {
+        return "";
     }
 
     @Override
@@ -96,7 +100,8 @@ public class StaticHtmlGenerator extends DefaultCodegenConfig implements Codegen
         if (propertySchema instanceof ArraySchema) {
             Schema inner = ((ArraySchema) propertySchema).getItems();
             return String.format("%s[%s]", getSchemaType(propertySchema), getTypeDeclaration(inner));
-        } else if (propertySchema instanceof MapSchema) {
+        }
+        else if (propertySchema instanceof MapSchema) {
             Schema inner = (Schema) propertySchema.getAdditionalProperties();
             return String.format("%s[String, %s]", getSchemaType(propertySchema), getTypeDeclaration(inner));
         }
@@ -143,28 +148,13 @@ public class StaticHtmlGenerator extends DefaultCodegenConfig implements Codegen
         return input;
     }
 
-    /**
-     * Markdown conversion emits HTML and by default, the Mustache
-     * {@link Compiler} will escape HTML. For example a summary
-     * <code>"Text with **bold**"</code> is converted from Markdown to HTML as
-     * <code>"Text with &lt;strong&gt;bold&lt;/strong&gt; text"</code> and then
-     * the default compiler with HTML escaping on turns this into
-     * <code>"Text with &amp;lt;strong&amp;gt;bold&amp;lt;/strong&amp;gt; text"</code>.
-     * Here, we disable escaping by setting the compiler to {@link Escapers#NONE
-     * Escapers.NONE}
-     */
-    @Override
-    public Compiler processCompiler(Compiler compiler) {
-        return compiler.withEscaper(Escapers.NONE);
-    }
-
     private Markdown markdownConverter = new Markdown();
-
-    private static final boolean CONVERT_TO_MARKDOWN_VIA_ESCAPE_TEXT = false;
 
     /**
      * Convert Markdown text to HTML
-     * @param input text in Markdown; may be null.
+     * 
+     * @param input
+     *            text in Markdown; may be null.
      * @return the text, converted to Markdown. For null input, "" is returned.
      */
     public String toHtml(String input) {
@@ -185,7 +175,7 @@ public class StaticHtmlGenerator extends DefaultCodegenConfig implements Codegen
         Info info = openAPI.getInfo();
         info.setDescription(toHtml(info.getDescription()));
         info.setTitle(toHtml(info.getTitle()));
-        if(openAPI.getComponents() == null || openAPI.getComponents().getSchemas() == null) {
+        if (openAPI.getComponents() == null || openAPI.getComponents().getSchemas() == null) {
             return;
         }
         Map<String, Schema> schemas = openAPI.getComponents().getSchemas();
@@ -198,16 +188,13 @@ public class StaticHtmlGenerator extends DefaultCodegenConfig implements Codegen
     // override to post-process any parameters
     public void postProcessParameter(CodegenParameter parameter) {
         parameter.description = toHtml(parameter.description);
-        parameter.unescapedDescription = toHtml(
-                parameter.unescapedDescription);
+        parameter.unescapedDescription = toHtml(parameter.unescapedDescription);
     }
 
     // override to post-process any model properties
-    public void postProcessModelProperty(CodegenModel model,
-            CodegenProperty property) {
+    public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         property.description = toHtml(property.description);
-        property.unescapedDescription = toHtml(
-                property.unescapedDescription);
+        property.unescapedDescription = toHtml(property.unescapedDescription);
     }
 
 }

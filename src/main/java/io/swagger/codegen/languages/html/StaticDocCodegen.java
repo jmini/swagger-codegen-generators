@@ -39,22 +39,14 @@ public class StaticDocCodegen extends DefaultCodegenConfig implements CodegenCon
 
         supportingFiles.add(new SupportingFile("package.mustache", "", "package.json"));
         supportingFiles.add(new SupportingFile("main.mustache", "", "main.js"));
-        supportingFiles.add(new SupportingFile("assets/css/bootstrap-responsive.css",
-                outputFolder + "/assets/css", "bootstrap-responsive.css"));
-        supportingFiles.add(new SupportingFile("assets/css/bootstrap.css",
-                outputFolder + "/assets/css", "bootstrap.css"));
-        supportingFiles.add(new SupportingFile("assets/css/style.css",
-                outputFolder + "/assets/css", "style.css"));
-        supportingFiles.add(new SupportingFile("assets/images/logo.png",
-                outputFolder + "/assets/images", "logo.png"));
-        supportingFiles.add(new SupportingFile("assets/js/bootstrap.js",
-                outputFolder + "/assets/js", "bootstrap.js"));
-        supportingFiles.add(new SupportingFile("assets/js/jquery-1.8.3.min.js",
-                outputFolder + "/assets/js", "jquery-1.8.3.min.js"));
-        supportingFiles.add(new SupportingFile("assets/js/main.js",
-                outputFolder + "/assets/js", "main.js"));
-        supportingFiles.add(new SupportingFile("index.mustache",
-                outputFolder, "index.html"));
+        supportingFiles.add(new SupportingFile("assets/css/bootstrap-responsive.css", outputFolder + "/assets/css", "bootstrap-responsive.css"));
+        supportingFiles.add(new SupportingFile("assets/css/bootstrap.css", outputFolder + "/assets/css", "bootstrap.css"));
+        supportingFiles.add(new SupportingFile("assets/css/style.css", outputFolder + "/assets/css", "style.css"));
+        supportingFiles.add(new SupportingFile("assets/images/logo.png", outputFolder + "/assets/images", "logo.png"));
+        supportingFiles.add(new SupportingFile("assets/js/bootstrap.js", outputFolder + "/assets/js", "bootstrap.js"));
+        supportingFiles.add(new SupportingFile("assets/js/jquery-1.8.3.min.js", outputFolder + "/assets/js", "jquery-1.8.3.min.js"));
+        supportingFiles.add(new SupportingFile("assets/js/main.js", outputFolder + "/assets/js", "main.js"));
+        supportingFiles.add(new SupportingFile("index.mustache", outputFolder, "index.html"));
 
         instantiationTypes.put("array", "ArrayList");
         instantiationTypes.put("map", "HashMap");
@@ -63,6 +55,11 @@ public class StaticDocCodegen extends DefaultCodegenConfig implements CodegenCon
     @Override
     public CodegenType getTag() {
         return CodegenType.DOCUMENTATION;
+    }
+
+    @Override
+    public String getArgumentsLocation() {
+        return "";
     }
 
     @Override
@@ -89,8 +86,8 @@ public class StaticDocCodegen extends DefaultCodegenConfig implements CodegenCon
     }
 
     @Override
-    public String escapeReservedWord(String name) {           
-        if(this.reservedWordsMappings().containsKey(name)) {
+    public String escapeReservedWord(String name) {
+        if (this.reservedWordsMappings().containsKey(name)) {
             return this.reservedWordsMappings().get(name);
         }
         return "_" + name;
@@ -116,5 +113,5 @@ public class StaticDocCodegen extends DefaultCodegenConfig implements CodegenCon
     public String escapeUnsafeCharacters(String input) {
         // just return the original string
         return input;
-    }   
+    }
 }

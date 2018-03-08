@@ -55,7 +55,7 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
         cliOptions.add(new CliOption(CodegenConstants.GROUP_ID, CodegenConstants.GROUP_ID_DESC));
         cliOptions.add(new CliOption(CodegenConstants.ARTIFACT_ID, CodegenConstants.ARTIFACT_ID_DESC));
         cliOptions.add(new CliOption(CodegenConstants.ARTIFACT_VERSION, CodegenConstants.ARTIFACT_VERSION_DESC));
-        
+
         additionalProperties.put("appName", "Swagger Sample");
         additionalProperties.put("appDescription", "A sample swagger server");
         additionalProperties.put("infoUrl", "https://helloreverb.com");
@@ -84,13 +84,19 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
     }
 
     @Override
+    public String getArgumentsLocation() {
+        return "";
+    }
+
+    @Override
     public String getName() {
         return "html2";
     }
 
     @Override
     public String escapeText(String input) {
-        // newline escaping disabled for HTML documentation for markdown to work correctly
+        // newline escaping disabled for HTML documentation for markdown to work
+        // correctly
         return input;
     }
 
@@ -104,7 +110,8 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
         if (propertySchema instanceof ArraySchema) {
             Schema inner = ((ArraySchema) propertySchema).getItems();
             return String.format("%s[%s]", getSchemaType(propertySchema), getTypeDeclaration(inner));
-        } else if (propertySchema instanceof MapSchema && propertySchema.getAdditionalProperties() instanceof Schema) {
+        }
+        else if (propertySchema instanceof MapSchema && propertySchema.getAdditionalProperties() instanceof Schema) {
             Schema inner = (Schema) propertySchema.getAdditionalProperties();
             return String.format("%s[String, %s]", getSchemaType(propertySchema), getTypeDeclaration(inner));
         }
@@ -117,8 +124,8 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
         List<CodegenOperation> operationList = (List<CodegenOperation>) operations.get("operation");
         for (CodegenOperation op : operationList) {
             op.httpMethod = op.httpMethod.toLowerCase();
-            for (CodegenResponse response : op.responses){
-                if ("0".equals(response.code)){
+            for (CodegenResponse response : op.responses) {
+                if ("0".equals(response.code)) {
                     response.code = "default";
                 }
             }
@@ -173,28 +180,32 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
             op.returnType = normalizeType(op.returnType);
         }
 
-        //path is an unescaped variable in the mustache template api.mustache line 82 '<&path>'
+        // path is an unescaped variable in the mustache template api.mustache
+        // line 82 '<&path>'
         op.path = sanitizePath(op.path);
 
         // Set vendor-extension to be used in template:
-        //     x-codegen-hasMoreRequired
-        //     x-codegen-hasMoreOptional
-        //     x-codegen-hasRequiredParams
+        // x-codegen-hasMoreRequired
+        // x-codegen-hasMoreOptional
+        // x-codegen-hasRequiredParams
         CodegenParameter lastRequired = null;
         CodegenParameter lastOptional = null;
         for (CodegenParameter p : op.allParams) {
             if (p.required) {
                 lastRequired = p;
-            } else {
+            }
+            else {
                 lastOptional = p;
             }
         }
         for (CodegenParameter p : op.allParams) {
             if (p == lastRequired) {
                 p.vendorExtensions.put("x-codegen-hasMoreRequired", false);
-            } else if (p == lastOptional) {
+            }
+            else if (p == lastOptional) {
                 p.vendorExtensions.put("x-codegen-hasMoreOptional", false);
-            } else {
+            }
+            else {
                 p.vendorExtensions.put("x-codegen-hasMoreRequired", true);
                 p.vendorExtensions.put("x-codegen-hasMoreOptional", true);
             }
@@ -209,15 +220,18 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
     /**
      * Parse Markdown to HTML for the main "Description" attribute
      *
-     * @param openAPI The base object containing the global description through "Info" class
+     * @param openAPI
+     *            The base object containing the global description through
+     *            "Info" class
      * @return Void
      */
     private void preparHtmlForGlobalDescription(OpenAPI openAPI) {
         String currentDescription = openAPI.getInfo().getDescription();
         if (currentDescription != null && !currentDescription.isEmpty()) {
             Markdown markInstance = new Markdown();
-            openAPI.getInfo().setDescription( markInstance.toHtml(currentDescription) );
-        } else {
+            openAPI.getInfo().setDescription(markInstance.toHtml(currentDescription));
+        }
+        else {
             LOGGER.error("Swagger object description is empty [" + openAPI.getInfo().getTitle() + "]");
         }
     }
@@ -225,12 +239,13 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
     /**
      * Format to HTML the enums contained in every operations
      *
-     * @param parameterList The whole parameters contained in one operation
+     * @param parameterList
+     *            The whole parameters contained in one operation
      * @return String | Html formated enum
      */
     public List<CodegenParameter> postProcessParameterEnum(List<CodegenParameter> parameterList) {
         String enumFormatted = "";
-        for(CodegenParameter parameter : parameterList) {
+        for (CodegenParameter parameter : parameterList) {
             if (getBooleanValue(parameter, CodegenConstants.IS_ENUM_EXT_NAME)) {
                 for (int i = 0; i < parameter._enum.size(); i++) {
                     String spacer = (i == (parameter._enum.size() - 1)) ? " " : ", ";
@@ -247,14 +262,15 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
     }
 
     private String sanitizePath(String p) {
-        //prefer replace a ', instead of a fuLL URL encode for readability
+        // prefer replace a ', instead of a fuLL URL encode for readability
         return p.replaceAll("'", "%27");
     }
 
     /**
      * Normalize type by wrapping primitive types with single quotes.
      *
-     * @param type Primitive type
+     * @param type
+     *            Primitive type
      * @return Normalized type
      */
     public String normalizeType(String type) {
@@ -271,5 +287,5 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
     public String escapeUnsafeCharacters(String input) {
         // just return the original string
         return input;
-    }   
+    }
 }
