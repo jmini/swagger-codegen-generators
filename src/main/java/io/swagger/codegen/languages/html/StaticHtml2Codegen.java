@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import static io.swagger.codegen.languages.helpers.ExtensionHelper.getBooleanValue;
 
-public class StaticHtml2Generator extends DefaultCodegenConfig implements CodegenConfig {
+public class StaticHtml2Codegen extends DefaultCodegenConfig implements CodegenConfig {
     protected String invokerPackage = "io.swagger.client"; // default for Java and Android
     protected String phpInvokerPackage = "Swagger\\Client"; // default for PHP
     protected String packageName = "IO.Swagger"; // default for C#
@@ -35,7 +35,7 @@ public class StaticHtml2Generator extends DefaultCodegenConfig implements Codege
     protected String perlModuleName = "WWW::SwaggerClient";
     protected String pythonPackageName = "swagger_client";
 
-    public StaticHtml2Generator() {
+    public StaticHtml2Codegen() {
         super();
         outputFolder = "docs";
 
