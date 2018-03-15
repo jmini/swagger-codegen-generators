@@ -14,7 +14,7 @@ ${{{perlModuleName}}}::Configuration::access_token = 'YOUR_ACCESS_TOKEN';{{/is}}
 {{/hasAuthMethods}}
 
 my $api_instance = {{perlModuleName}}::{{classname}}->new();
-{{#allParams}}my ${{paramName}} = {{#isListContainer}}[{{/isListContainer}}{{#is this 'body-param'}}{{{perlModuleName}}}::Object::{{dataType}}->new(){{/is}}{{^isBodyParam}}{{{example}}}{{/isBodyParam}}{{#isListContainer}}]{{/isListContainer}}; # {{{dataType}}} | {{{unescapedDescription}}}
+{{#allParams}}my ${{paramName}} = {{#is this 'list-container'}}[{{/is}}{{#is this 'body-param'}}{{{perlModuleName}}}::Object::{{dataType}}->new(){{/is}}{{^isBodyParam}}{{{example}}}{{/isBodyParam}}{{#is this 'list-container'}}]{{/is}}; # {{{dataType}}} | {{{unescapedDescription}}}
 {{/allParams}}
 
 eval { 
