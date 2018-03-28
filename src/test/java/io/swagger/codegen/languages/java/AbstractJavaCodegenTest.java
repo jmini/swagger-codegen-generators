@@ -111,11 +111,11 @@ public class AbstractJavaCodegenTest {
         codegen.processOpts();
 
         Assert.assertEquals(codegen.modelPackage(), "invalidPackageName");
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.MODEL_PACKAGE), "invalidPackageName");
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.MODEL_PACKAGE), null);
         Assert.assertEquals(codegen.apiPackage(), "invalidPackageName");
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.API_PACKAGE), "invalidPackageName");
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.API_PACKAGE), null);
         Assert.assertEquals(codegen.invokerPackage, "io.swagger");
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.INVOKER_PACKAGE), "invalidPackageName");
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.INVOKER_PACKAGE), "io.swagger");
     }
 
     @Test
@@ -128,13 +128,13 @@ public class AbstractJavaCodegenTest {
         codegen.processOpts();
 
         Assert.assertEquals(codegen.modelPackage(), "xxx.yyyyy.zzzzzzz.model");
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.MODEL_PACKAGE), "xxx.yyyyy.zzzzzzz.model");
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.MODEL_PACKAGE), "xxx.yyyyy.zzzzzzz.model");
         Assert.assertEquals(codegen.apiPackage(), "xxx.yyyyy.zzzzzzz.api");
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.API_PACKAGE), "xxx.yyyyy.zzzzzzz.api");
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.API_PACKAGE), "xxx.yyyyy.zzzzzzz.api");
         Assert.assertEquals(codegen.invokerPackage, "xxx.yyyyy.zzzzzzz.invoker");
         Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.INVOKER_PACKAGE), "xxx.yyyyy.zzzzzzz.invoker");
         Assert.assertEquals(codegen.getSortParamsByRequiredFlag(), Boolean.FALSE);
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.SORT_PARAMS_BY_REQUIRED_FLAG), Boolean.FALSE);
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.SORT_PARAMS_BY_REQUIRED_FLAG), Boolean.FALSE);
     }
 
     @Test
@@ -145,7 +145,7 @@ public class AbstractJavaCodegenTest {
         codegen.additionalProperties().put(CodegenConstants.INVOKER_PACKAGE, "xxx.yyyyy.invoker.xxxxxx");
         codegen.setSortParamsByRequiredFlag(true);
         codegen.processOpts();
-        
+
         Assert.assertEquals(codegen.modelPackage(), "xxx.yyyyy.model.xxxxxx");
         Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.MODEL_PACKAGE), "xxx.yyyyy.model.xxxxxx");
         Assert.assertEquals(codegen.apiPackage(), "xxx.yyyyy.api.xxxxxx");
@@ -153,7 +153,7 @@ public class AbstractJavaCodegenTest {
         Assert.assertEquals(codegen.invokerPackage, "xxx.yyyyy.invoker.xxxxxx");
         Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.INVOKER_PACKAGE), "xxx.yyyyy.invoker.xxxxxx");
         Assert.assertEquals(codegen.getSortParamsByRequiredFlag(), Boolean.TRUE);
-//        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.SORT_PARAMS_BY_REQUIRED_FLAG), Boolean.TRUE);
+        Assert.assertEquals(codegen.additionalProperties().get(CodegenConstants.SORT_PARAMS_BY_REQUIRED_FLAG), Boolean.TRUE);
     }
 
     public static class P_AbstractJavaCodegen extends AbstractJavaCodegen {
