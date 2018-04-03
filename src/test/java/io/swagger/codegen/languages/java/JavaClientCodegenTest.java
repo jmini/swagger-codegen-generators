@@ -15,6 +15,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.RequestBody;
 import io.swagger.v3.parser.util.SchemaTypeUtil;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -153,7 +154,7 @@ public class JavaClientCodegenTest {
         Assert.assertEquals(codegenParameter2.description, "A list of list of values");
         Assert.assertEquals(codegenParameter2.dataType, "List<List<Integer>>");
         Assert.assertEquals(codegenParameter2.baseType, "List");
-        
+
         RequestBody body3 = new RequestBody();
         body3.setDescription("A list of points");
         body3.setContent(new Content().addMediaType("application/json", new MediaType().schema(new ArraySchema().items(new ObjectSchema().$ref("#/components/schemas/Point")))));

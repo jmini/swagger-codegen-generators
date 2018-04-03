@@ -6,6 +6,7 @@ import io.swagger.codegen.languages.DefaultCodegenConfig;
 import io.swagger.v3.oas.models.media.ComposedSchema;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
+
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static io.swagger.codegen.CodegenConstants.IS_ENUM_EXT_NAME;
-import static io.swagger.codegen.languages.helpers.ExtensionHelper.getBooleanValue;
+import static io.swagger.codegen.handlebars.helpers.ExtensionHelper.getBooleanValue;
 
 public class JavaModelEnumTest {
     @Test(description = "convert a java model with an enum")

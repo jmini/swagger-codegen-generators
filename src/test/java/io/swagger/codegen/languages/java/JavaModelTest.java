@@ -40,10 +40,13 @@ import org.testng.annotations.Test;
 
 import java.io.File;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import static io.swagger.codegen.languages.helpers.ExtensionHelper.getBooleanValue;
+import static io.swagger.codegen.handlebars.helpers.ExtensionHelper.getBooleanValue;
 
 public class JavaModelTest {
     private TemporaryFolder folder = new TemporaryFolder();
@@ -357,6 +360,27 @@ public class JavaModelTest {
         Assert.assertEquals(Sets.intersection(cm.imports, Sets.newHashSet("ApiModel", "List", "ArrayList", "Children")).size(), 4);
     }
 
+    @Test(description = "convert an array of enum model")
+    public void arrayModelOfEnumModelTest() {
+        final Schema schema = new ArraySchema()
+                .items(new Schema().$ref("#/components/schemas/SomeEnum"))
+                .name("arraySchema")
+                .description("an array model");
+        StringSchema enumSchema = new StringSchema().addEnumItem("Aaa").addEnumItem("Bbb");
+        Map<String, Schema> allDefinitions = Collections.singletonMap("SomeEnum", enumSchema);
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        final CodegenModel cm = codegen.fromModel("sample", schema, allDefinitions);
+
+        Assert.assertEquals(cm.name, "sample");
+        Assert.assertEquals(cm.classname, "Sample");
+        Assert.assertEquals(cm.description, "an array model");
+        Assert.assertEquals(cm.vars.size(), 0);
+        Assert.assertEquals(cm.parent, "ArrayList<SomeEnum>");
+        Assert.assertEquals(cm.dataType, "List<SomeEnum>");
+        Assert.assertEquals(cm.imports.size(), 4);
+        Assert.assertEquals(Sets.intersection(cm.imports, Sets.newHashSet("ApiModel", "List", "ArrayList", "Children")).size(), 4);
+    }
+
     @Test(description = "convert an map model")
     public void mapModelTest() {
         final Schema schema = new Schema()
@@ -547,6 +571,73 @@ public class JavaModelTest {
         final CodegenParameter cm = codegen.fromParameter(parameter, null);
 
         Assert.assertNull(cm.allowableValues);
+    }
+
+    @Test(description = "convert a list of string parameter")
+    public void convertEnumParameterTest() {
+        final Parameter parameter = new QueryParameter()
+                .name("param")
+                .schema(new StringSchema().addEnumItem("Aaa").addEnumItem("Bbb"));
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        Set<String> imports = new HashSet<>();
+        final CodegenParameter cp = codegen.fromParameter(parameter, imports);
+        
+        Assert.assertEquals(cp.baseName, "param");
+        Assert.assertEquals(cp.dataType, "X");
+    }
+
+    @Test(description = "convert a list of string parameter")
+    public void convertArrayOfStringParameterTest() {
+        final Parameter parameter = new QueryParameter()
+                .name("param")
+                .schema(new ArraySchema().items(new StringSchema()));
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        Set<String> imports = new HashSet<>();
+        final CodegenParameter cp = codegen.fromParameter(parameter, imports);
+
+        Assert.assertEquals(cp.baseName, "param");
+        Assert.assertEquals(cp.dataType, "List<String>");
+    }
+
+    @Test(description = "convert a list of complex type parameter")
+    public void convertArrayOfComplexParameterTest() {
+        final Parameter parameter = new QueryParameter()
+                .name("param")
+                .schema(new ArraySchema().items(new Schema<>().$ref("SomeObject")));
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        Set<String> imports = new HashSet<>();
+        final CodegenParameter cp = codegen.fromParameter(parameter, imports);
+
+        Assert.assertEquals(cp.baseName, "param");
+        Assert.assertEquals(cp.dataType, "List<SomeObject>");
+    }
+
+    @Test(description = "convert a list of enum parameter")
+    public void convertArrayOfEnumParameterTest() {
+        final Parameter parameter = new QueryParameter()
+                .name("param")
+                .schema(new ArraySchema().items(new StringSchema().addEnumItem("Aaa").addEnumItem("Bbb")));
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        Set<String> imports = new HashSet<>();
+        final CodegenParameter cp = codegen.fromParameter(parameter, imports);
+
+        Assert.assertEquals(cp.baseName, "param");
+        Assert.assertEquals(cp.dataType, "List<X>");
+    }
+
+    @Test(description = "convert a list of string parameter")
+    public void convertEnumRequestBodyTest() {
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+
+        RequestBody body1 = new RequestBody();
+        body1.setDescription("Some description");
+        body1.setContent(new Content().addMediaType("application/json", new MediaType().schema(new StringSchema().addEnumItem("Aaa").addEnumItem("Bbb"))));
+        Set<String> imports = new HashSet<>();
+        CodegenParameter cp = codegen.fromRequestBody(body1 , new HashMap<String, Schema>(), imports);
+
+        Assert.assertEquals(cp.baseName, "body");
+        Assert.assertEquals(cp.datatypeWithEnum, "body");
+        Assert.assertEquals(cp.dataType, "X");
     }
 
     @Test(description = "types used by inner properties should be imported")
@@ -777,6 +868,42 @@ public class JavaModelTest {
         Assert.assertEquals(cp.baseType, "Long");
         Assert.assertTrue(getBooleanValue(cp, CodegenConstants.IS_NOT_CONTAINER_EXT_NAME));
         Assert.assertTrue(getBooleanValue(cp, CodegenConstants.IS_LONG_EXT_NAME));
+        Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_INTEGER_EXT_NAME));
+        Assert.assertEquals(cp.getter, "getProperty");
+    }
+
+    @Test(description = "convert array of string property")
+    public void arrayOfStringPropertyTest() {
+        final Schema schema = new ArraySchema()
+                .items(new StringSchema());
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        final CodegenProperty cp = codegen.fromProperty("property", schema);
+
+        Assert.assertEquals(cp.baseName, "property");
+        Assert.assertEquals(cp.datatype, "List<String>");
+        Assert.assertEquals(cp.name, "property");
+        Assert.assertEquals(cp.baseType, "List");
+        Assert.assertTrue(getBooleanValue(cp, CodegenConstants.IS_CONTAINER_EXT_NAME));
+        Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_NOT_CONTAINER_EXT_NAME));
+        Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_LONG_EXT_NAME));
+        Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_INTEGER_EXT_NAME));
+        Assert.assertEquals(cp.getter, "getProperty");
+    }
+
+    @Test(description = "convert array of complex type property")
+    public void arrayOfComplexPropertyTest() {
+        final Schema schema = new ArraySchema()
+                .items(new Schema<>().$ref("SomeObject"));
+        final DefaultCodegenConfig codegen = new JavaClientCodegen();
+        final CodegenProperty cp = codegen.fromProperty("property", schema);
+        
+        Assert.assertEquals(cp.baseName, "property");
+        Assert.assertEquals(cp.datatype, "List<SomeObject>");
+        Assert.assertEquals(cp.name, "property");
+        Assert.assertEquals(cp.baseType, "List");
+        Assert.assertTrue(getBooleanValue(cp, CodegenConstants.IS_CONTAINER_EXT_NAME));
+        Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_NOT_CONTAINER_EXT_NAME));
+        Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_LONG_EXT_NAME));
         Assert.assertFalse(getBooleanValue(cp, CodegenConstants.IS_INTEGER_EXT_NAME));
         Assert.assertEquals(cp.getter, "getProperty");
     }
